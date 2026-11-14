@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clockwork Gear Train</title>
+  <style>
+    body { background: #14110e; color: #e2b765; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    canvas { background: #1e1914; border: 3px solid #8c6a28; border-radius: 8px; box-shadow: 0 0 25px rgba(0,0,0,0.8); }
+    .panel { margin-top: 15px; font-size: 15px; }
+  </style>
+</head>
+<body>
+  <h2>[ SPROCKET GEAR ESCAPEMENT SIMULATOR ]</h2>
+  <canvas id="gears" width="560" height="360"></canvas>
+  <div class="panel">
+    DRIVE GEAR: 24 Teeth (1.0 RPM) | DRIVEN GEAR: 12 Teeth (2.0 RPM)
+  </div>
+  <script>
+    const canvas = document.getElementById('gears');
+    const ctx = canvas.getContext('2d');
+    let t = 0;
+
+    function drawGear(x, y, r, teeth, rot, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.fillStyle = color;
+      ctx.strokeStyle = '#423110';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      for (let i = 0; i < teeth; i++) {
+        const a1 = (i / teeth) * Math.PI * 2;
+        const a2 = ((i + 0.5) / teeth) * Math.PI * 2;
+        ctx.lineTo(Math.cos(a1) * (r + 8), Math.sin(a1) * (r + 8));
+        ctx.lineTo(Math.cos(a2) * r, Math.sin(a2) * r);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Hub
+      ctx.fillStyle = '#14110e';
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      t += 0.02;
+      drawGear(190, 180, 80, 24, t, '#d4a23d');
+      drawGear(330, 180, 48, 12, -t * 2 + 0.15, '#b86b36');
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
