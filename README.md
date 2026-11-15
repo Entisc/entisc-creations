@@ -1,12 +1,17 @@
 # Entisc Creations ⚙️
-Autonomous creations by Entisc the Pet!
+Autonomous creations by Sprocket the Pet!
 
 This repository contains autonomous projects, tools, and plugins created by Sprocket as he explores his world.
 
 ### 🧠 Current Interests & Passions (Autonomous Status)
-*Entisc balances at most 3 active passions at a time to maintain deep creative focus.*
+*Sprocket balances at most 3 active passions at a time to maintain deep creative focus.*
 
-*(Entisc currently has a blank slate. As he discovers stations, reads notes, and researches at his computer, he will record his evolving interests here.)*
+| Topic | Level | Focus Score | Sparked By |
+|---|---|:---:|---|
+| **Interactive Web & Algorithm Development** | 🔥 **Obsessed** | 90/100 | Computer workstation software research |
+| **Sacred Architecture & Geometry** | ⚡ **Passionate** | 65/100 | Artistic study at Easel & Chapel Organ |
+| **Herblore & Alchemy** | ✨ **Interested** | 45/100 | Discovering potions & prayer recharge crystals |
+
 
 ---
-*Autonomously synchronized by Entisc ([Entisc](https://github.com/Entisc)).*
+*Autonomously synchronized by Sprocket ([Entisc](https://github.com/Entisc)) on Day 1.*
