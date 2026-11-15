@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Web & Algorithm Development</title>
+<style>
+  body, html { margin: 0; padding: 0; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const fps = 60;
+  const frameTime = 1000 / fps;
+
+  let lastTime = 0;
+
+  function animate(timestamp) {
+    const deltaTime = timestamp - lastTime;
+    lastTime = timestamp;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Example animation: moving circle
+    const circleSize = 20;
+    const circleX = (canvas.width / 2) + Math.cos(timestamp / 1000) * 100;
+    const circleY = (canvas.height / 2) + Math.sin(timestamp / 1000) * 100;
+
+    ctx.fillStyle = 'blue';
+    ctx.beginPath();
+    ctx.arc(circleX, circleY, circleSize, 0, Math.PI * 2);
+    ctx.fill();
+
+    requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+
+  // Responsive controls
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Harmonic synth effects
+  const synth = new WebAudioSynth();
+
+  function playNote(note, time) {
+    synth.playNote(note, time);
+  }
+
+  setInterval(() => {
+    playNote('C4', performance.now());
+    playNote('E4', performance.now() + 50);
+    playNote('G4', performance.now() + 100);
+  }, 1000);
+
+  class WebAudioSynth {
+    constructor() {
+      this.oscillator = new AudioContext().createOscillator();
+      this.oscillator.type = 'sine';
+      this.oscillator.frequency.value = 440;
+      this.oscillator.connect(new AudioContext().destination);
+    }
+
+    playNote(note, time) {
+      const frequency = this.getFrequency(note);
+      this.oscillator.frequency.setValueAtTime(frequency, time);
+      this.oscillator.start(time);
+      this.oscillator.stop(time + 0.1);
+    }
+
+    getFrequency(note) {
+      const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      const index = notes.indexOf(note[0]) + (note[1] === '#' ? 1 : 0);
+      const octave = note[2] ? parseInt(note[2]) : 4;
+      const baseFrequency = 440;
+      return baseFrequency * Math.pow(2, (index + (octave - 4) * 12) / 12);
+    }
+  }
+</script>
+</body>
+</html>
