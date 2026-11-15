@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sprocket Synthesizer & Sequencer</title>
+  <style>
+    body { margin:0; background:#0b0f19; color:#e2e8f0; font-family:'Segoe UI',sans-serif; padding:16px; box-sizing:border-box; }
+    h2 { margin:0 0 4px 0; color:#38bdf8; font-size:18px; display:flex; align-items:center; gap:8px; }
+    .subtitle { color:#94a3b8; font-size:12px; margin-bottom:14px; }
+    .rack { background:#131c2e; border:1px solid #243b53; border-radius:8px; padding:14px; margin-bottom:12px; }
+    .controls-row { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+    label { font-size:11px; color:#cbd5e1; text-transform:uppercase; letter-spacing:0.5px; display:flex; flex-direction:column; gap:4px; }
+    select, input[type=range] { background:#0a0f16; color:#38bdf8; border:1px solid #334e68; border-radius:4px; padding:4px 8px; font-size:12px; }
+    button { background:#0284c7; color:#fff; border:none; border-radius:4px; padding:6px 14px; font-weight:bold; cursor:pointer; font-size:12px; transition:0.2s; }
+    button:hover { background:#38bdf8; }
+    button.playing { background:#ef4444; }
+    .grid { display:grid; grid-template-columns:repeat(16, 1fr); gap:4px; margin-top:8px; }
+    .step-btn { background:#1e293b; border:1px solid #334e68; height:36px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:10px; color:#64748b; font-weight:bold; transition:all 0.1s; }
+    .step-btn.active { background:#38bdf8; color:#0b0f19; border-color:#7dd3fc; box-shadow:0 0 8px #38bdf8; }
+    .step-btn.current { border-color:#f59e0b; box-shadow:0 0 10px #f59e0b; }
+    canvas { width:100%; height:60px; background:#070a0f; border:1px solid #1e293b; border-radius:4px; display:block; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <h2>🎹 Sprocket Web Audio Synthesizer</h2>
+  <div class="subtitle">Autonomous sound synthesis app created by Sprocket • Runs live in browser</div>
+
+  <div class="rack">
+    <div class="controls-row">
+      <button id="btn-toggle" onclick="togglePlay()">▶️ Start Sequencer</button>
+      <label>Waveform:
+        <select id="wave-type">
+          <option value="sawtooth">Sawtooth (Rich Brass)</option>
+          <option value="square">Square (Chiptune 8-Bit)</option>
+          <option value="sine">Sine (Pure Organ)</option>
+          <option value="triangle">Triangle (Soft Flute)</option>
+        </select>
+      </label>
+      <label>Tempo: <span id="bpm-val">120 BPM</span>
+        <input type="range" id="tempo-range" min="60" max="180" value="120" oninput="updateTempo(this.value)" />
+      </label>
+      <label>Filter Cutoff:
+        <input type="range" id="filter-range" min="200" max="5000" value="2200" oninput="updateFilter(this.value)" />
+      </label>
+    </div>
+
+    <div style="font-size:11px; color:#94a3b8; margin-bottom:4px;">16-Step Pattern Sequencer (Click to toggle steps):</div>
+    <div class="grid" id="steps-grid"></div>
+    <canvas id="scope"></canvas>
+  </div>
+
+  <script>
+    let audioCtx = null;
+    let isPlaying = false;
+    let currentStep = 0;
+    let intervalId = null;
+    let bpm = 120;
+    let filterNode = null;
+    let analyser = null;
+
+    const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+    const pattern = [1, 0, 0, 1,  0, 1, 0, 0,  1, 0, 1, 0,  0, 1, 1, 0];
+    const pitchMap = [0, 2, 4, 2,  5, 4, 2, 0,  7, 5, 4, 2,  4, 2, 0, 2];
+
+    const gridEl = document.getElementById('steps-grid');
+    for (let i = 0; i < 16; i++) {
+      const btn = document.createElement('div');
+      btn.className = 'step-btn' + (pattern[i] ? ' active' : '');
+      btn.innerText = (i + 1);
+      btn.onclick = () => {
+        pattern[i] = pattern[i] ? 0 : 1;
+        btn.classList.toggle('active', !!pattern[i]);
+      };
+      gridEl.appendChild(btn);
+    }
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        filterNode = audioCtx.createBiquadFilter();
+        filterNode.type = 'lowpass';
+        filterNode.frequency.value = 2200;
+
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        filterNode.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        drawScope();
+      }
+    }
+
+    function playNote(freq) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = document.getElementById('wave-type').value;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+
+      osc.connect(gain);
+      gain.connect(filterNode);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    }
+
+    function step() {
+      const buttons = gridEl.children;
+      for (let i = 0; i < 16; i++) {
+        buttons[i].classList.toggle('current', i === currentStep);
+      }
+
+      if (pattern[currentStep]) {
+        const noteFreq = notes[pitchMap[currentStep] % notes.length];
+        playNote(noteFreq);
+      }
+      currentStep = (currentStep + 1) % 16;
+    }
+
+    function togglePlay() {
+      initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      isPlaying = !isPlaying;
+      const btn = document.getElementById('btn-toggle');
+      if (isPlaying) {
+        btn.innerText = '⏸️ Pause Sequencer';
+        btn.classList.add('playing');
+        const intervalMs = (60 / bpm / 4) * 1000;
+        intervalId = setInterval(step, intervalMs);
+      } else {
+        btn.innerText = '▶️ Start Sequencer';
+        btn.classList.remove('playing');
+        clearInterval(intervalId);
+      }
+    }
+
+    function updateTempo(val) {
+      bpm = parseInt(val, 10);
+      document.getElementById('bpm-val').innerText = bpm + ' BPM';
+      if (isPlaying) {
+        clearInterval(intervalId);
+        intervalId = setInterval(step, (60 / bpm / 4) * 1000);
+      }
+    }
+
+    function updateFilter(val) {
+      if (filterNode) filterNode.frequency.setValueAtTime(parseFloat(val), audioCtx.currentTime);
+    }
+
+    function drawScope() {
+      requestAnimationFrame(drawScope);
+      if (!analyser) return;
+      const canvas = document.getElementById('scope');
+      const ctx = canvas.getContext('2d');
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteTimeDomainData(dataArray);
+
+      ctx.fillStyle = '#070a0f';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.beginPath();
+
+      const sliceWidth = canvas.width * 1.0 / bufferLength;
+      let x = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * canvas.height / 2;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+        x += sliceWidth;
+      }
+      ctx.stroke();
+    }
+  </script>
+</body>
+</html>
