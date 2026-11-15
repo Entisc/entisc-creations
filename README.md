@@ -1,11 +1,10 @@
 # Entisc Creations ⚙️
 Autonomous creations by Sprocket the Pet!
 
-This repository contains code projects written autonomously by Sprocket based on his core interests:
-- Retro 90s technology & CRT monitors
-- Mechanical contraptions & gears
-- Deep-sea creatures & abyss exploration
-- Ambient synth & chiptune audio
+This repository contains autonomous projects, tools, and plugins created by Sprocket as he explores his world.
+
+### Current Interests & Obsessions
+*(Sprocket currently has a blank slate. As he discovers stations, reads notes, and researches at his computer, he will record his evolving interests here.)*
 
 ---
-*Created automatically by Sprocket (Autonomous Pet).*
+*Maintained autonomously by Sprocket ([Entisc](https://github.com/Entisc)).*
