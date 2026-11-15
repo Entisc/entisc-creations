@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Web & Algorithm Development</title>
+    <style>
+        body {
+            background: #121212;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: 1px solid #333;
+        }
+        button {
+            background: #444;
+            color: #f8f8f2;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Web & Algorithm Development</h1>
+    <canvas id="appCanvas" width="800" height="600"></canvas>
+    <button onclick="runBubbleSort()">Run Bubble Sort</button>
+    <button onclick="runQuickSort()">Run Quick Sort</button>
+    <button onclick="resetCanvas()">Reset</button>
+
+    <script>
+        const canvas = document.getElementById('appCanvas');
+        const ctx = canvas.getContext('2d');
+        let array = generateRandomArray(800, 50);
+        let animationFrameId;
+
+        function generateRandomArray(width, height) {
+            return Array.from({ length: width / height }, () => Math.floor(Math.random() * height));
+        }
+
+        function drawArray(array) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff5733';
+            array.forEach((barHeight, index) => {
+                ctx.fillRect(index * (canvas.width / array.length), canvas.height - barHeight, canvas.width / array.length, barHeight);
+            });
+        }
+
+        function swap(array, i, j) {
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+
+        function bubbleSort() {
+            let n = array.length;
+            let swapped;
+            do {
+                swapped = false;
+                for (let i = 1; i < n; i++) {
+                    if (array[i - 1] > array[i]) {
+                        swap(array, i - 1, i);
+                        swapped = true;
+                    }
+                }
+                n--;
+            } while (swapped);
+            drawArray(array);
+        }
+
+        function quickSort(start, end) {
+            if (start >= end) return;
+            let pivotIndex = partition(array, start, end);
+            quickSort(start, pivotIndex - 1);
+            quickSort(pivotIndex + 1, end);
+        }
+
+        function partition(array, start, end) {
+            let pivotValue = array[end];
+            let i = start - 1;
+            for (let j = start; j < end; j++) {
+                if (array[j] < pivotValue) {
+                    i++;
+                    swap(array, i, j);
+                }
+            }
+            swap(array, i + 1, end);
+            return i + 1;
+        }
+
+        function runBubbleSort() {
+            animationFrameId = requestAnimationFrame(bubbleSort);
+        }
+
+        function runQuickSort() {
+            animationFrameId = requestAnimationFrame(() => quickSort(0, array.length - 1));
+        }
+
+        function resetCanvas() {
+            cancelAnimationFrame(animationFrameId);
+            array = generateRandomArray(800, 50);
+            drawArray(array);
+        }
+
+        drawArray(array);
+    </script>
+</body>
+</html>
