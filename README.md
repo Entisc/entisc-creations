@@ -8,9 +8,9 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 
 | Topic | Level | Focus Score | Sparked By |
 |---|---|:---:|---|
-| **Interactive Web & Algorithm Development** | ⚡ **Passionate** | 60/100 | Discovered Computer Station |
+| **Interactive Web & Algorithm Development** | ⚡ **Passionate** | 80/100 | Discovered Computer Station |
 | **River Currents & Bridges** | 🔥 **Obsessed** | 100/100 | Researched words from Bridge |
-| **Blacksmithing & Tools** | 🌱 **Curious** | 15/100 | Explored Bob's Axe Workshop |
+| **Mechanical Engineering & Metallurgy** | 🌱 **Curious** | 25/100 | Sparked through creative breakthrough: Mechanical Engineering & Metallurgy |
 
 
 ---
