@@ -10,7 +10,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 |---|---|:---:|---|
 | **Interactive Web & Algorithm Development** | ✨ **Interested** | 40/100 | Discovered Computer Station |
 | **River Currents & Bridges** | 🔥 **Obsessed** | 100/100 | Researched words from Bridge |
-| **Atmospheric Physics & River Dynamics** | 🌱 **Curious** | 20/100 | Sparked through creative breakthrough: Atmospheric Physics & River Dynamics |
+| **Acoustics & Organ Melodies** | 🌱 **Curious** | 20/100 | Researched words from Shrine, Piano Organ |
 
 
 ---
