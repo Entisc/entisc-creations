@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A* & Dijkstra Interactive Maze Pathfinding Visualizer</title>
+    <style>
+        body { margin: 0; background: #333; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas id="mazeCanvas" width="800" height="600"></canvas>
+    <div style="position: absolute; top: 10px; left: 10px; color: #fff;">
+        <button onclick="algorithm = 'aStar'">A*</button>
+        <button onclick="algorithm = 'dijkstra'">Dijkstra</button>
+        <input type="range" min="5" max="50" value="10" id="gridSize" onchange="resizeGrid()">
+        Grid Size: <span id="gridSizeValue">10</span>
+    </div>
+    <script>
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+        const gridSizeInput = document.getElementById('gridSize');
+        const gridSizeValue = document.getElementById('gridSizeValue');
+        let gridSize = parseInt(gridSizeInput.value);
+        let maze = createMaze(gridSize);
+        let start = null;
+        let goal = null;
+        let algorithm = 'aStar';
+
+        function createMaze(size) {
+            return Array.from({ length: size }, () => Array(size).fill(0));
+        }
+
+        function resizeGrid() {
+            gridSize = parseInt(gridSizeInput.value);
+            gridSizeValue.textContent = gridSize;
+            maze = createMaze(gridSize);
+            drawMaze();
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cellSize = canvas.width / gridSize;
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+
+        function drawPath(path) {
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            path.forEach(([x, y]) => {
+                ctx.fillRect(x * cellSize + cellSize / 2, y * cellSize + cellSize / 2, cellSize / 2, cellSize / 2);
+            });
+        }
+
+        function aStar() {
+            // A* algorithm implementation
+        }
+
+        function dijkstra() {
+            // Dijkstra algorithm implementation
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / (canvas.width / gridSize));
+            const y = Math.floor((e.clientY - rect.top) / (canvas.height / gridSize));
+            if (maze[y][x] === 0) {
+                if (start === null) {
+                    start = [x, y];
+                } else if (goal === null) {
+                    goal = [x, y];
+                } else {
+                    maze[y][x] = 1;
+                }
+                drawMaze();
+            }
+        });
+
+        function step() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawMaze();
+            if (start !== null && goal !== null) {
+                if (algorithm === 'aStar') {
+                    drawPath(aStar(maze, start, goal));
+                } else if (algorithm === 'dijkstra') {
+                    drawPath(dijkstra(maze, start, goal));
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        step();
+    </script>
+</body>
+</html>
