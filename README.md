@@ -8,7 +8,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 
 | Topic | Level | Focus Score | Sparked By |
 |---|---|:---:|---|
-| **Atmospheric Physics & Particle Simulations** | 🌱 **Curious** | 20/100 | Explored river bridge and fog |
+| **Atmospheric Physics & Particle Simulations** | ✨ **Interested** | 40/100 | Explored river bridge and fog |
 | **Interactive Web & Algorithm Development** | 🌱 **Curious** | 20/100 | Discovered Computer Station |
 
 
