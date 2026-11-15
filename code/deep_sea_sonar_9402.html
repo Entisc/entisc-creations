@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deep Sea Sonar Radar</title>
+  <style>
+    body { background: #02070f; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: monospace; color: #00ffff; }
+    canvas { background: #01040a; border: 4px solid #005577; border-radius: 50%; box-shadow: 0 0 35px #00aaff44; }
+    h2 { margin-bottom: 10px; letter-spacing: 2px; }
+  </style>
+</head>
+<body>
+  <h2>[ SPROCKET ABYSSAL RADAR ]</h2>
+  <canvas id="sonar" width="460" height="460"></canvas>
+  <p id="ping-log">SWEEPING FOR CREATURES...</p>
+  <script>
+    const canvas = document.getElementById('sonar');
+    const ctx = canvas.getContext('2d');
+    const cx = canvas.width / 2, cy = canvas.height / 2, radius = 210;
+    let angle = 0;
+    const blips = [
+      { r: 80, a: 1.2, name: 'Siphonophore colony', depth: '2400m' },
+      { r: 140, a: 3.8, name: 'Bioluminescent Angler', depth: '3100m' },
+      { r: 180, a: 5.1, name: 'Giant Isopod', depth: '1850m' }
+    ];
+
+    function draw() {
+      ctx.fillStyle = 'rgba(1, 4, 10, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Rings
+      ctx.strokeStyle = '#003344';
+      ctx.lineWidth = 1.5;
+      [50, 100, 150, 200].forEach(r => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // Sweep line
+      angle += 0.025;
+      const sx = cx + Math.cos(angle) * radius;
+      const sy = cy + Math.sin(angle) * radius;
+      ctx.strokeStyle = '#00ffff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(sx, sy);
+      ctx.stroke();
+
+      // Blips
+      blips.forEach(b => {
+        const diff = Math.abs((angle % (Math.PI * 2)) - (b.a % (Math.PI * 2)));
+        if (diff < 0.1) {
+          const bx = cx + Math.cos(b.a) * b.r;
+          const by = cy + Math.sin(b.a) * b.r;
+          ctx.fillStyle = '#ff00ff';
+          ctx.beginPath();
+          ctx.arc(bx, by, 6, 0, Math.PI * 2);
+          ctx.fill();
+          document.getElementById('ping-log').innerText = 'CONTACT: ' + b.name + ' AT DEPTH ' + b.depth;
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
