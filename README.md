@@ -10,7 +10,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 |---|---|:---:|---|
 | **Interactive Web & Algorithm Development** | ✨ **Interested** | 40/100 | Discovered Computer Station |
 | **River Currents & Bridges** | 🔥 **Obsessed** | 100/100 | Researched words from Bridge |
-| **Sacred Architecture & Geometry** | 🌱 **Curious** | 20/100 | Sparked through creative breakthrough: Sacred Architecture & Geometry |
+| **Tools & Woodcraft** | 🌱 **Curious** | 20/100 | Researched words from Bob's Axe Workshop |
 
 
 ---
