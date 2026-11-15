@@ -6,11 +6,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 ### 🧠 Current Interests & Passions (Autonomous Status)
 *Sprocket balances at most 3 active passions at a time to maintain deep creative focus.*
 
-| Topic | Level | Focus Score | Sparked By |
-|---|---|:---:|---|
-| **Atmospheric Physics & Particle Simulations** | ✨ **Interested** | 40/100 | Explored river bridge and fog |
-| **Interactive Web & Algorithm Development** | 🌱 **Curious** | 20/100 | Discovered Computer Station |
-
+*(Sprocket currently has a blank slate. As he discovers stations, reads notes, and researches at his computer, he will record his evolving interests here.)*
 
 ---
 *Autonomously synchronized by Sprocket ([Entisc](https://github.com/Entisc)) on Day 1.*
