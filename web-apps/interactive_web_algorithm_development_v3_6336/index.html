@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Web & Algorithm Development (v3.0.0)</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #121212; }
+  canvas { border: 1px solid #222; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff'];
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = (Math.random() - 0.5) * 2;
+      this.speedY = (Math.random() - 0.5) * 2;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (this.x + this.size < 0 || this.x - this.size > canvas.width) this.speedX *= -1;
+      if (this.y + this.size < 0 || this.y - this.size > canvas.height) this.speedY *= -1;
+
+      this.draw();
+    }
+  }
+
+  function init() {
+    particles.length = 0;
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle(canvas.width / 2, canvas.height / 2));
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(particle => particle.update());
+  }
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    init();
+  });
+
+  init();
+  animate();
+
+  const synth = new Tone.Synth().toDestination();
+  const pad = new Tone.Piano().toDestination();
+
+  function playNote(note) {
+    synth.triggerAttackRelease(note, '8n');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'a') playNote('C4');
+    if (e.key === 's') playNote('D4');
+    if (e.key === 'd') playNote('E4');
+    if (e.key === 'f') playNote('F4');
+    if (e.key === 'g') playNote('G4');
+    if (e.key === 'h') playNote('A4');
+    if (e.key === 'j') playNote('B4');
+  });
+</script>
+</body>
+</html>
