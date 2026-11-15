@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Web & Algorithm Development</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #1c1c24;
+    color: #d4d4d4;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  canvas {
+    display: block;
+  }
+  button {
+    background: #333;
+    border: none;
+    color: #d4d4d4;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    outline: none;
+    font-size: 16px;
+  }
+  button:hover {
+    background: #555;
+  }
+</style>
+</head>
+<body>
+<canvas id="appCanvas"></canvas>
+<button onclick="changeAlgorithm(0)">Fibonacci</button>
+<button onclick="changeAlgorithm(1)">Sierpinski Triangle</button>
+<button onclick="changeAlgorithm(2)">Mandelbrot Set</button>
+<script>
+  const canvas = document.getElementById('appCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let algorithmIndex = 0;
+  const algorithms = [
+    fibonacciAnimation,
+    sierpinskiTriangle,
+    mandelbrotSet
+  ];
+
+  function changeAlgorithm(index) {
+    algorithmIndex = index;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    algorithms[algorithmIndex]();
+  }
+
+  function fibonacciAnimation() {
+    let a = 0, b = 1, temp;
+    let x = 0, y = canvas.height / 2;
+    for (let i = 0; i < 2000; i++) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillRect(x, y, 10, 10);
+      temp = a;
+      a = b;
+      b = temp + b;
+      x += 10;
+    }
+  }
+
+  function sierpinskiTriangle() {
+    const points = [
+      { x: canvas.width / 2, y: 10 },
+      { x: 10, y: canvas.height - 10 },
+      { x: canvas.width - 10, y: canvas.height - 10 }
+    ];
+    function drawTriangle(points, depth) {
+      if (depth === 0) return;
+      const midpoints = [
+        { x: (points[0].x + points[1].x) / 2, y: (points[0].y + points[1].y) / 2 },
+        { x: (points[1].x + points[2].x) / 2, y: (points[1].y + points[2].y) / 2 },
+        { x: (points[2].x + points[0].x) / 2, y: (points[2].y + points[0].y) / 2 }
+      ];
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      ctx.lineTo(midpoints[0].x, midpoints[0].y);
+      ctx.lineTo(midpoints[1].x, midpoints[1].y);
+      ctx.closePath();
+      ctx.fill();
+      drawTriangle([points[0], midpoints[0], midpoints[2]], depth - 1);
+      drawTriangle([midpoints[0], points[1], midpoints[1]], depth - 1);
+      drawTriangle([midpoints[2], midpoints[1], points[2]], depth - 1);
+    }
+    drawTriangle(points, 10);
+  }
+
+  function mandelbrotSet() {
+    const zoom = 200;
+    const offsetX = canvas.width / 2;
+    const offsetY = canvas.height / 2;
+    const maxIterations = 256;
+    for (let x = 0; x < canvas.width; x++) {
+      for (let y = 0; y < canvas.height; y++) {
+        let zx = (x - offsetX) / zoom;
+        let zy = (y - offsetY) / zoom;
+        let iter = 0;
+        while (zx * zx + zy * zy < 4 && iter < maxIterations) {
+          let nx = zx * zx - zy * zy + (x - offsetX) / zoom;
+          zy = 2 * zx * zy + (y - offsetY) / zoom;
+          zx = nx;
+          iter++;
+        }
+        ctx.fillStyle = `hsla(${iter * 360 / maxIterations}, 100%, 50%, 0.25)';
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+
+  changeAlgorithm(algorithmIndex);
+</script>
+</body>
+</html>
