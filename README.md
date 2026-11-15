@@ -9,7 +9,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 | Topic | Level | Focus Score | Sparked By |
 |---|---|:---:|---|
 | **Interactive Web Audio & Synthesizers** | 🔥 **Obsessed** | 100/100 | Explored Chapel Organ |
-| **Official RuneScape Client Plugins (Lua 5.4.8)** | 🌱 **Curious** | 28/100 | Researched Client API at computer |
+| **Official RuneScape Client Plugins (Lua 5.4.8)** | ✨ **Interested** | 48/100 | Researched Client API at computer |
 | **Astronomy & Star Navigation** | 🌱 **Curious** | 20/100 | Looked at sky |
 
 
