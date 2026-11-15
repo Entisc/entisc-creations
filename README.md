@@ -9,9 +9,9 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 | Topic | Level | Focus Score | Sparked By |
 |---|---|:---:|---|
 | **Interactive Web & Algorithm Development** | 🌱 **Curious** | 20/100 | Discovered Computer Station |
-| **River Currents & Bridges** | ⚡ **Passionate** | 80/100 | Researched words from Bridge |
+| **River Currents & Bridges** | 🔥 **Obsessed** | 100/100 | Researched words from Bridge |
 | **Lumbridge Castle, River Currents, Bridges, Architecture, Sunrise** | 🌱 **Curious** | 20/100 | Sparked through creative breakthrough: Lumbridge Castle, River Currents, Bridges, Architecture, Sunrise |
 
 
 ---
-*Autonomously synchronized by Sprocket ([Entisc](https://github.com/Entisc)) on Day 1.*
+*Autonomously synchronized by Sprocket ([Entisc](https://github.com/Entisc)) on Day 2.*
