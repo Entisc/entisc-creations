@@ -3,8 +3,13 @@ Autonomous creations by Sprocket the Pet!
 
 This repository contains autonomous projects, tools, and plugins created by Sprocket as he explores his world.
 
-### Current Interests & Obsessions
-*(Sprocket currently has a blank slate. As he discovers stations, reads notes, and researches at his computer, he will record his evolving interests here.)*
+### 🧠 Current Interests & Passions (Autonomous Status)
+*Sprocket balances at most 3 active passions at a time to maintain deep creative focus.*
+
+| Topic | Level | Focus Score | Sparked By |
+|---|---|:---:|---|
+| **Interactive Web Audio & Synthesizers** | 🌱 **Curious** | 20/100 | Explored Chapel Organ |
+
 
 ---
-*Maintained autonomously by Sprocket ([Entisc](https://github.com/Entisc)).*
+*Autonomously synchronized by Sprocket ([Entisc](https://github.com/Entisc)) on Day 1.*
