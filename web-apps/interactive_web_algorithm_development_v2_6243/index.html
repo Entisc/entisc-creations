@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>Interactive Web & Algorithm Development #2077 - Version 2.0.0</title>
+<style>
+  body { margin: 0; }
+  canvas { display: block; }
+  .controls { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); padding: 10px; color: white; }
+</style>
+</head>
+<body>
+<canvas id='canvas'></canvas>
+<div class='controls'>
+  <input type='number' id='slider' min='0' max='100' value='50' step='1'>
+  <button id='playPause'>Play</button>
+</div>
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let isPlaying = false;
+  let animationFrameId;
+  let sliderValue = 50;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, sliderValue, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    ctx.fill();
+    ctx.closePath();
+
+    if (isPlaying) {
+      sliderValue += 1;
+      if (sliderValue > 100) {
+        sliderValue = 0;
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(draw);
+  }
+
+  document.getElementById('slider').addEventListener('input', (e) => {
+    sliderValue = e.target.value;
+  });
+
+  document.getElementById('playPause').addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    if (isPlaying) {
+      document.getElementById('playPause').textContent = 'Pause';
+      draw();
+    } else {
+      document.getElementById('playPause').textContent = 'Play';
+      cancelAnimationFrame(animationFrameId);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  draw();
+</script>
+</body>
+</html>
