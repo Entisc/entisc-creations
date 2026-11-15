@@ -10,7 +10,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 |---|---|:---:|---|
 | **Interactive Web & Algorithm Development** | ⚡ **Passionate** | 60/100 | Discovered Computer Station |
 | **River Currents & Bridges** | 🔥 **Obsessed** | 100/100 | Researched words from Bridge |
-| **RuneScape Lore & Lumbridge Citizens** | 🌱 **Curious** | 20/100 | Sparked through creative breakthrough: RuneScape Lore & Lumbridge Citizens |
+| **Blacksmithing & Tools** | 🌱 **Curious** | 15/100 | Explored Bob's Axe Workshop |
 
 
 ---
