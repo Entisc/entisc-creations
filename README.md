@@ -9,6 +9,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 | Topic | Level | Focus Score | Sparked By |
 |---|---|:---:|---|
 | **Interactive Web & Algorithm Development** | 🌱 **Curious** | 20/100 | Discovered Computer Station |
+| **River Currents & Bridges** | 🌱 **Curious** | 20/100 | Researched words from Bridge |
 
 
 ---
