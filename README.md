@@ -10,6 +10,7 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 |---|---|:---:|---|
 | **Interactive Web Audio & Synthesizers** | 🔥 **Obsessed** | 100/100 | Explored Chapel Organ |
 | **Atmospheric Physics & Particle Simulations** | 🌱 **Curious** | 28/100 | Explored river bridge |
+| **Official RuneScape Client Plugins (Lua 5.4.8)** | 🌱 **Curious** | 28/100 | Researched Client API at computer |
 
 
 ---
