@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mechanical Gear Train</title>
+  <style>
+    body { margin:0; background:#0c0a14; color:#ddd6fe; font-family:'Segoe UI',sans-serif; padding:16px; text-align:center; }
+    h3 { margin:0 0 4px 0; color:#c084fc; }
+    .bar { margin-bottom:10px; display:flex; justify-content:center; gap:16px; font-size:12px; }
+    canvas { background:#07050a; border:2px solid #3b2055; border-radius:6px; display:block; margin:0 auto; }
+  </style>
+</head>
+<body>
+  <h3>⚙️ Interactive Mechanical Gear Train</h3>
+  <div class="bar">
+    <label>Speed: <input type="range" id="spd" min="1" max="10" value="4" /></label>
+    <span>Ratio: <b>2.5 : 1.0 (Torque Multiplier)</b></span>
+  </div>
+  <canvas id="gearCanvas" width="440" height="300"></canvas>
+
+  <script>
+    const canvas = document.getElementById('gearCanvas');
+    const ctx = canvas.getContext('2d');
+    let angle1 = 0;
+
+    function drawGear(cx, cy, r, teeth, angle, color) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle);
+      ctx.fillStyle = color;
+      ctx.strokeStyle = '#581c87';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      for (let i = 0; i < teeth; i++) {
+        const a1 = (i / teeth) * Math.PI * 2;
+        const a2 = ((i + 0.3) / teeth) * Math.PI * 2;
+        const a3 = ((i + 0.6) / teeth) * Math.PI * 2;
+        const a4 = ((i + 1) / teeth) * Math.PI * 2;
+
+        ctx.arc(0, 0, r + 8, a1, a2);
+        ctx.arc(0, 0, r - 4, a3, a4);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Center hole
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.25, 0, Math.PI * 2);
+      ctx.fillStyle = '#07050a';
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const speed = parseFloat(document.getElementById('spd').value) * 0.01;
+      angle1 += speed;
+
+      // Gear 1 (Drive gear, 20 teeth, radius 60)
+      drawGear(140, 150, 60, 20, angle1, '#9333ea');
+
+      // Gear 2 (Driven gear, 12 teeth, radius 36) -> spins reverse, faster
+      const angle2 = -angle1 * (20 / 12);
+      drawGear(244, 150, 36, 12, angle2, '#c084fc');
+
+      // Gear 3 (Follower, 16 teeth, radius 48)
+      const angle3 = angle1 * (20 / 16);
+      drawGear(336, 150, 48, 16, angle3, '#7c3aed');
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
