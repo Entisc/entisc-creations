@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Web & Algorithm Development</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #121212;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        canvas {
+            border: 1px solid #333;
+        }
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="controls">
+        <label for="speed">Speed:</label>
+        <input type="range" id="speed" min="1" max="10" value="5" step="1">
+        <button id="addLocomotive">Add Locomotive</button>
+    </div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let locomotives = [];
+        let speed = 5;
+
+        function drawLocomotive(loco) {
+            ctx.fillStyle = loco.color;
+            ctx.fillRect(loco.x, loco.y, loco.width, loco.height);
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            locomotives.forEach(loco => {
+                loco.x += loco.speed;
+                if (loco.x > canvas.width) loco.x = -loco.width;
+                drawLocomotive(loco);
+            });
+            requestAnimationFrame(update);
+        }
+
+        function addLocomotive() {
+            locomotives.push({
+                x: 0,
+                y: canvas.height / 2,
+                width: 20,
+                height: 50,
+                speed,
+                color: `hsl(${Math.random() * 360}, 100%, 50%)`
+            });
+        }
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            speed = e.target.value;
+            locomotives.forEach(loco => loco.speed = speed);
+        });
+
+        document.getElementById('addLocomotive').addEventListener('click', addLocomotive);
+
+        update();
+    </script>
+</body>
+</html>
