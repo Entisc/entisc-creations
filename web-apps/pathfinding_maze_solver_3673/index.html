@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A* & Dijkstra Maze Pathfinding</title>
+    <style>
+        body { background-color: #222; color: #fff; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 20px; }
+        canvas { border: 1px solid #fff; }
+        button, select { margin-top: 10px; padding: 5px 10px; background-color: #555; color: #fff; border: none; cursor: pointer; }
+        button:hover, select:hover { background-color: #777; }
+    </style>
+</head>
+<body>
+    <h1>A* & Dijkstra Maze Pathfinding</h1>
+    <select id="algorithm">
+        <option value="astar">A*</option>
+        <option value="dijkstra">Dijkstra</option>
+    </select>
+    <button id="generateMaze">Generate Maze</button>
+    <canvas id="mazeCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const cellSize = 20;
+        let maze = createMaze(width / cellSize, height / cellSize);
+        let start = null;
+        let goal = null;
+        let algorithm = document.getElementById('algorithm').value;
+
+        function createMaze(width, height) {
+            let maze = new Array(height).fill().map(() => new Array(width).fill(0));
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    if (y === 0 || x === 0 || y === height - 1 || x === width - 1) maze[y][x] = 1;
+                    else if (Math.random() < 0.3) maze[y][x] = 1;
+                }
+            }
+            return maze;
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#000';
+            for (let y = 0; y < maze.length; y++) {
+                for (let x = 0; x < maze[y].length; x++) {
+                    if (maze[y][x] === 1) ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+            ctx.fillStyle = '#f00';
+            if (start) ctx.fillRect(start[0] * cellSize, start[1] * cellSize, cellSize, cellSize);
+            ctx.fillStyle = '#0f0';
+            if (goal) ctx.fillRect(goal[0] * cellSize, goal[1] * cellSize, cellSize, cellSize);
+        }
+
+        function findPath(start, goal) {
+            let openSet = [start];
+            let cameFrom = {};
+            let gScore = { [start.toString()]: 0 };
+            let fScore = { [start.toString()]: heuristic(start, goal) };
+
+            while (openSet.length > 0) {
+                let current = openSet.sort((a, b) => fScore[a.toString()] - fScore[b.toString()])[0];
+
+                if (current.toString() === goal.toString()) {
+                    let path = [];
+                    let currentPath = current;
+                    while (currentPath) {
+                        path.unshift(currentPath);
+                        currentPath = cameFrom[currentPath.toString()];
+                    }
+                    return path;
+                }
+
+                openSet = openSet.filter(cell => cell.toString() !== current.toString());
+
+                for (let neighbor of getNeighbors(current, maze)) {
+                    let tentativeGScore = gScore[current.toString()] + 1;
+
+                    if (!gScore[neighbor.toString()] || tentativeGScore < gScore[neighbor.toString()]) {
+                        cameFrom[neighbor.toString()] = current;
+                        gScore[neighbor.toString()] = tentativeGScore;
+                        fScore[neighbor.toString()] = gScore[neighbor.toString()] + heuristic(neighbor, goal);
+                        if (!openSet.some(cell => cell.toString() === neighbor.toString())) openSet.push(neighbor);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        function heuristic(a, b) {
+            return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+        }
+
+        function getNeighbors(cell, maze) {
+            let neighbors = [];
+            let [x, y] = cell;
+            if (y > 0 && maze[y - 1][x] === 0) neighbors.push([x, y - 1]);
+            if (y < maze.length - 1 && maze[y + 1][x] === 0) neighbors.push([x, y + 1]);
+            if (x > 0 && maze[y][x - 1] === 0) neighbors.push([x - 1, y]);
+            if (x < maze[y].length - 1 && maze[y][x + 1] === 0) neighbors.push([x + 1, y]);
+            return neighbors;
+        }
+
+        function drawPath(path) {
+            ctx.strokeStyle = path === null ? '#f00' : '#0f0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(start[0] * cellSize + cellSize / 2, start[1] * cellSize + cellSize / 2);
+            path.forEach(point => {
+                ctx.lineTo(point[0] * cellSize + cellSize / 2, point[1] * cellSize + cellSize / 2);
+            });
+            ctx.stroke();
+        }
+
+        function clickHandler(e) {
+            let rect = canvas.getBoundingClientRect();
+            let x = Math.floor((e.clientX - rect.left) / cellSize);
+            let y = Math.floor((e.clientY - rect.top) / cellSize);
+
+            if (maze[y][x] === 0) {
+                if (!start) start = [x, y];
+                else if (!goal) goal = [x, y];
+                else start = goal = null;
+                drawMaze();
+            }
+        }
+
+        function generateMazeHandler() {
+            maze = createMaze(width / cellSize, height / cellSize);
+            start = goal = null;
+            drawMaze();
+        }
+
+        canvas.addEventListener('click', clickHandler);
+        document.getElementById('generateMaze').addEventListener('click', generateMazeHandler);
+
+        drawMaze();
+    </script>
+</body>
+</html>
