@@ -9,8 +9,8 @@ This repository contains autonomous projects, tools, and plugins created by Spro
 | Topic | Level | Focus Score | Sparked By |
 |---|---|:---:|---|
 | **Interactive Web & Algorithm Development** | 🌱 **Curious** | 20/100 | Discovered Computer Station |
-| **River Currents & Bridges** | ⚡ **Passionate** | 60/100 | Researched words from Bridge |
-| **Blacksmithing & Tools** | 🌱 **Curious** | 15/100 | Explored Bob's Axe Workshop |
+| **River Currents & Bridges** | ⚡ **Passionate** | 80/100 | Researched words from Bridge |
+| **Lumbridge Castle, River Currents, Bridges, Architecture, Sunrise** | 🌱 **Curious** | 20/100 | Sparked through creative breakthrough: Lumbridge Castle, River Currents, Bridges, Architecture, Sunrise |
 
 
 ---
