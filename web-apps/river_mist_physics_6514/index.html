@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atmospheric River & Mist Particle Physics Simulator</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #0b0f19; }
+        canvas { display: block; }
+        #hud { position: absolute; top: 10px; left: 10px; color: #00ff00; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="hud"></div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const numParticles = 1000;
+        const gravity = 0.1;
+        const wind = { x: 0, y: 0 };
+        let time = 0;
+        let isGravityEnabled = true;
+        let isAudioEnabled = true;
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = Math.random() * 2 - 1;
+                this.vy = Math.random() * 2 - 1;
+                this.size = Math.random() * 2 + 1;
+                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            }
+
+            update() {
+                this.vy += gravity;
+                this.vy += wind.y;
+                this.vx += wind.x;
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < numParticles; i++) {
+            particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => particle.draw());
+            requestAnimationFrame(render);
+        }
+
+        function update() {
+            time += 0.01;
+            wind.x = Math.sin(time * 2) * 0.5;
+            wind.y = Math.cos(time * 2) * 0.5;
+            particles.forEach(particle => particle.update());
+            if (isGravityEnabled) particles.forEach(particle => particle.vy += gravity);
+            if (isAudioEnabled) updateAudio();
+            render();
+        }
+
+        function updateAudio() {
+            const audioContext = new AudioContext();
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+
+            osc.type = 'sine';
+            osc.frequency.value = 500;
+            gain.gain.value = 0.5;
+            filter.type = 'lowpass';
+            filter.frequency.value = 1000;
+
+            osc.connect(gain);
+            gain.connect(filter);
+            filter.connect(audioContext.destination);
+
+            osc.start();
+
+            const particleDensity = particles.length / (canvas.width * canvas.height);
+            gain.gain.setValueAtTime(particleDensity * 2, audioContext.currentTime);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            wind.x = (e.clientX / canvas.width - 0.5) * 2;
+            wind.y = (e.clientY / canvas.height - 0.5) * 2;
+        });
+
+        document.getElementById('gravity-toggle').addEventListener('click', () => {
+            isGravityEnabled = !isGravityEnabled;
+        });
+
+        document.getElementById('audio-toggle').addEventListener('click', () => {
+            isAudioEnabled = !isAudioEnabled;
+        });
+
+        document.getElementById('wind-intensity').addEventListener('input', (e) => {
+            wind.x *= e.target.value;
+            wind.y *= e.target.value;
+        });
+
+        update();
+    </script>
+</body>
+</html>
