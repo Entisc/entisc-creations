@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Web & Algorithm Development (v4.0.0)</title>
+<style>
+  body { margin: 0; }
+  canvas { display: block; }
+  #controls { position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.5); color: white; padding: 10px; border-radius: 5px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="controls">
+  <label for="algoType">Algorithm Type:</label>
+  <select id="algoType">
+    <option value="sort">Sort</option>
+    <option value="search">Search</option>
+    <option value="graph">Graph</option>
+  </select>
+  <label for="speed">Speed:</label>
+  <input type="range" id="speed" min="1" max="100" value="50">
+</div>
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const controls = document.getElementById('controls');
+  let algoType = controls.querySelector('#algoType').value;
+  let speed = controls.querySelector('#speed').value;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function drawBackground() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function drawArray(arr) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground();
+    const barWidth = (canvas.width / arr.length) * 0.8;
+    const barSpacing = (canvas.width / arr.length) * 0.1;
+    arr.forEach((value, index) => {
+      ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
+      if (index === currentIndex) ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+      ctx.fillRect(
+        index * (barWidth + barSpacing) + barSpacing,
+        canvas.height - value * 10,
+        barWidth,
+        value * 10
+      );
+    });
+  }
+
+  let currentIndex = 0;
+  let array = Array.from({ length: 100 }, () => Math.floor(Math.random() * 200));
+
+  function sortArray() {
+    switch (algoType) {
+      case 'sort':
+        bubbleSort(array, drawArray);
+        break;
+      case 'search':
+        binarySearch(array, 100, drawArray);
+        break;
+      case 'graph':
+        drawGraph(array, drawArray);
+        break;
+    }
+  }
+
+  function bubbleSort(arr, drawCallback) {
+    let swapped;
+    for (let i = 0; i < arr.length; i++) {
+      swapped = false;
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+          currentIndex = j;
+          drawCallback(arr);
+          swapped = true;
+        }
+      }
+      if (!swapped) break;
+    }
+  }
+
+  function binarySearch(arr, target, drawCallback) {
+    let left = 0;
+    let right = arr.length - 1;
+    let found = false;
+    while (left <= right && !found) {
+      currentIndex = Math.floor((left + right) / 2);
+      drawCallback(arr);
+      if (arr[currentIndex] === target) {
+        found = true;
+      } else if (arr[currentIndex] < target) {
+        left = currentIndex + 1;
+      } else {
+        right = currentIndex - 1;
+      }
+    }
+  }
+
+  function drawGraph(arr, drawCallback) {
+    drawBackground();
+    const max = Math.max(...arr);
+    const barWidth = (canvas.width / arr.length) * 0.8;
+    const barSpacing = (canvas.width / arr.length) * 0.1;
+    arr.forEach((value, index) => {
+      ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
+      ctx.fillRect(
+        index * (barWidth + barSpacing) + barSpacing,
+        canvas.height - (value / max) * canvas.height,
+        barWidth,
+        (value / max) * canvas.height
+      );
+    });
+  }
+
+  controls.querySelector('#algoType').addEventListener('change', () => {
+    algoType = controls.querySelector('#algoType').value;
+    array = Array.from({ length: 100 }, () => Math.floor(Math.random() * 200));
+    drawArray(array);
+  });
+
+  controls.querySelector('#speed').addEventListener('input', () => {
+    speed = controls.querySelector('#speed').value;
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    drawArray(array);
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  animate();
+  sortArray();
+</script>
+</body>
+</html>
